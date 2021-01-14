@@ -1,84 +1,89 @@
-var Acl = require('../')
-  , tests = require('./tests')
-  , backendTests = require('./backendtests');
+const Acl        = require("../"),
+    {expect}     = require("chai"),
+    tests        = require("./tests"),
+    backendTests = require("./backendtests");
 
-describe('MongoDB - Default', function () {
-  before(function (done) {
-    var self = this
-      , mongodb = require('mongodb')
+describe("MongoDB - Default", () => {
+    before(function (done) {
+        const self = this,
+            mongodb = require("mongodb");
 
-    mongodb.connect('mongodb://localhost:27017/acltest',function(error, db) {
-      db.dropDatabase(function () {
-        self.backend = new Acl.mongodbBackend(db, "acl")
-        done()
-      })
-    })
-  })
+        mongodb.connect("mongodb://localhost:27017/acltest", { useUnifiedTopology: true },(error, client) => {
+            expect(error).to.be.null;
+            const db = client.db("acltest");
+            db.dropDatabase(() => {
+                self.backend = new Acl.mongodbBackend(db, "acl");
+                done();
+            });
+        });
+    });
 
-  run()
+    run();
 });
 
 
-describe('MongoDB - useSingle', function () {
-  before(function (done) {
-    var self = this
-      , mongodb = require('mongodb')
+describe("MongoDB - useSingle", () => {
+    before(function (done) {
+        const self = this,
+            mongodb = require("mongodb");
 
-    mongodb.connect('mongodb://localhost:27017/acltest',function(error, db) {
-      db.dropDatabase(function () {
-        self.backend = new Acl.mongodbBackend(db, "acl", true)
-        done()
-      })
-    })
-  })
+        mongodb.connect("mongodb://localhost:27017/acltest", { useUnifiedTopology: true },(error, client) => {
+            expect(error).to.be.null;
+            const db = client.db("acltest");
+            db.dropDatabase(() => {
+                self.backend = new Acl.mongodbBackend(db, "acl", true);
+                done();
+            });
+        });
+    });
 
-  run()
+    run();
 });
 
-describe('Redis', function () {
-  before(function (done) {
-    var self = this
-      , options = {
-          host: '127.0.0.1',
-          port: 6379,
-          password: null
+describe("Redis", () => {
+    before(function (done) {
+        const self = this,
+            options = {
+                host: "127.0.0.1",
+                port: 6379,
+                password: null,
+            },
+            Redis = require("redis");
+
+
+        const redis = Redis.createClient(options.port, options.host,  {no_ready_check: true} );
+
+        function start(){
+            self.backend = new Acl.redisBackend(redis);
+            done();
         }
-      , Redis = require('redis')
+
+        if (options.password) {
+            redis.auth(options.password, start);
+        } else {
+            start();
+        }
+    });
+
+    run();
+});
 
 
-    var redis = Redis.createClient(options.port, options.host,  {no_ready_check: true} )
+describe("Memory", () => {
+    before(function () {
+        const self = this;
+        self.backend = new Acl.memoryBackend();
+    });
 
-    function start(){
-      self.backend = new Acl.redisBackend(redis)
-      done()
-    }
-
-    if (options.password) {
-      redis.auth(options.password, start)
-    } else {
-      start()
-    }
-  })
-
-  run()
-})
-
-
-describe('Memory', function () {
-  before(function () {
-    var self = this
-      self.backend = new Acl.memoryBackend()
-  })
-
-  run()
-})
+    run();
+});
 
 function run() {
-  Object.keys(tests).forEach(function (test) {
-    tests[test]()
-  })
+    Object.keys(tests).forEach((test) => {
+        tests[test]();
+    });
 
-  Object.keys(backendTests).forEach(function (test) {
-    backendTests[test]()
-  });
+    Object.keys(backendTests).forEach((test) => {
+        backendTests[test]();
+    });
 }
