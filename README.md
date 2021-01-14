@@ -1,5 +1,7 @@
 # NODE ACL - Access Control Lists for Node
 
+**This is a fork of this [package](https://github.com/OptimalBits/node_acl)**
+
 This module provides a minimalistic ACL implementation inspired by Zend_ACL.
 
 When you develop a web site or application you will soon notice that sessions are not enough to protect all the
@@ -11,14 +13,6 @@ to get the finest granularity possible, while in other situations you will give 
 for admin kind of functionality.
 
 A Redis, MongoDB and In-Memory based backends are provided built-in in the module. There are other third party backends such as [*knex*](https://github.com/christophertrudel/node_acl_knex) based, [*firebase*](https://github.com/tonila/node_acl_firebase) and [*elasticsearch*](https://github.com/adnanesaghir/acl-elasticsearch-backend). There is also an alternative memory backend that supports [*regexps*](https://github.com/futurechan/node_acl-mem-regexp).
-
-Follow [manast](http://twitter.com/manast) for news and updates regarding this library.
-
-## Status
-
-[![BuildStatus](https://secure.travis-ci.org/OptimalBits/node_acl.png?branch=master)](http://travis-ci.org/OptimalBits/node_acl)
-[![Dependency Status](https://david-dm.org/OptimalBits/node_acl.svg)](https://david-dm.org/OptimalBits/node_acl)
-[![devDependency Status](https://david-dm.org/OptimalBits/node_acl/dev-status.svg)](https://david-dm.org/OptimalBits/node_acl#info=devDependencies)
 
 ## Features
 
